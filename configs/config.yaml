@@ -1,0 +1,8 @@
+server:
+  port: 8080
+
+log:
+  level: info
+
+conversations:
+  file_path: configs/conversations.yaml

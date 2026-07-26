@@ -1,0 +1,32 @@
+conversations:
+  - id: conv-veiculos-promo
+    type: action
+    product: veiculo
+    text: "Confira as ofertas da semana em veiculos"
+    link: "https://example.com/veiculos/promocoes"
+    priority: 10
+    components: [banner, card]
+
+  - id: conv-eletro-promo
+    type: action
+    product: eletrodomestico
+    text: "Eletrodomesticos com ate 30% de desconto"
+    link: "https://example.com/eletrodomesticos/promocoes"
+    priority: 10
+    components: [banner, card]
+
+  - id: conv-veiculos-avaliacao
+    type: evaluation
+    product: veiculo
+    text: "Veja o que outros clientes acharam deste veiculo"
+    link: "https://example.com/veiculos/avaliacoes"
+    priority: 5
+    components: [card]
+
+  - id: conv-institucional
+    type: knowledge
+    product: ""
+    text: "Saiba mais sobre nossa empresa"
+    link: "https://example.com/sobre"
+    priority: 1
+    components: [footer, banner, card]
