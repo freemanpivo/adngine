@@ -1,0 +1,8 @@
+conversations:
+  - id: conv-prioridade-invalida
+    type: action
+    product: veiculo
+    text: "Prioridade em formato invalido"
+    link: "https://example.com"
+    priority: "dez"
+    components: [banner]
