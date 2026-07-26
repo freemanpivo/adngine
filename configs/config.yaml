@@ -4,5 +4,16 @@ server:
 log:
   level: info
 
-conversations:
-  file_path: configs/conversations.yaml
+selection:
+  global_timeout: 1s
+  components:
+    banner:
+      file_path: configs/conversations/banner.yaml
+      timeout: 200ms
+    card:
+      file_path: configs/conversations/card.yaml
+      timeout: 200ms
+    footer:
+      file_path: configs/conversations/footer.yaml
+      timeout: 500ms
+      max_calls: 3

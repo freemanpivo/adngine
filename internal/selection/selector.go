@@ -11,15 +11,25 @@ type Registry struct {
 	selectors map[string]Selector
 }
 
-func NewRegistry(repo *conversation.Repository) *Registry {
-	return &Registry{
-		repo: repo,
-		selectors: map[string]Selector{
-			ComponentBanner: NewBannerSelector(),
-			ComponentCard:   NewCardSelector(),
-			ComponentFooter: NewFooterSelector(),
-		},
+// Componente sem selector proprio cai no DefaultSelector, para que adicionar um
+// componente exija apenas config e arquivo de inventario.
+var selectorsByComponent = map[string]func() Selector{
+	ComponentBanner: func() Selector { return NewBannerSelector() },
+	ComponentCard:   func() Selector { return NewCardSelector() },
+	ComponentFooter: func() Selector { return NewFooterSelector() },
+}
+
+func NewRegistry(repo *conversation.Repository, components []string) *Registry {
+	selectors := make(map[string]Selector, len(components))
+	for _, component := range components {
+		newSelector, ok := selectorsByComponent[component]
+		if !ok {
+			newSelector = func() Selector { return NewDefaultSelector() }
+		}
+		selectors[component] = newSelector()
 	}
+
+	return &Registry{repo: repo, selectors: selectors}
 }
 
 func (r *Registry) Select(component string, client conversation.Client) (*conversation.Conversation, bool) {
@@ -27,7 +37,7 @@ func (r *Registry) Select(component string, client conversation.Client) (*conver
 	if !ok {
 		return nil, false
 	}
-	candidates := r.repo.ByComponent(component)
+	candidates := r.repo.Candidates(component)
 	return selector.Select(client, candidates)
 }
 

@@ -1,0 +1,8 @@
+component: footer
+fallbacks:
+  - product: ""
+    id: fb-footer-default
+    type: knowledge
+    text: "Fallback default"
+    link: "https://example.com"
+conversations: []

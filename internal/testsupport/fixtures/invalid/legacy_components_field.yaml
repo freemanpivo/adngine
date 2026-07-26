@@ -1,0 +1,15 @@
+component: banner
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default"
+    link: "https://example.com"
+conversations:
+  - id: conv-legada
+    type: action
+    product: veiculo
+    text: "Conversa no formato antigo"
+    link: "https://example.com"
+    priority: 10
+    components: [banner, card]

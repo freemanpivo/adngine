@@ -1,3 +1,27 @@
+component: banner
+
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Conheca tudo o que oferecemos"
+    link: "https://example.com/sobre"
+    priority: 0
+
+  - product: veiculo
+    id: fb-banner-veiculo
+    type: knowledge
+    text: "Conheca nosso catalogo de veiculos"
+    link: "https://example.com/veiculos"
+    priority: 0
+
+  - product: eletrodomestico
+    id: fb-banner-eletrodomestico
+    type: knowledge
+    text: "Conheca nossa linha de eletrodomesticos"
+    link: "https://example.com/eletrodomesticos"
+    priority: 0
+
 conversations:
   - id: conv-veiculos-promo
     type: action
@@ -5,7 +29,6 @@ conversations:
     text: "Confira as ofertas da semana em veiculos"
     link: "https://example.com/veiculos/promocoes"
     priority: 10
-    components: [banner, card]
 
   - id: conv-eletro-promo
     type: action
@@ -13,15 +36,6 @@ conversations:
     text: "Eletrodomesticos com ate 30% de desconto"
     link: "https://example.com/eletrodomesticos/promocoes"
     priority: 10
-    components: [banner, card]
-
-  - id: conv-veiculos-avaliacao
-    type: evaluation
-    product: veiculo
-    text: "Veja o que outros clientes acharam deste veiculo"
-    link: "https://example.com/veiculos/avaliacoes"
-    priority: 5
-    components: [card]
 
   - id: conv-institucional
     type: knowledge
@@ -29,4 +43,3 @@ conversations:
     text: "Saiba mais sobre nossa empresa"
     link: "https://example.com/sobre"
     priority: 1
-    components: [footer, banner, card]

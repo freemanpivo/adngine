@@ -1,3 +1,20 @@
+component: banner
+
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default do banner"
+    link: "https://example.com/banner/default"
+    priority: 0
+
+  - product: veiculo
+    id: fb-banner-veiculo
+    type: knowledge
+    text: "Fallback de veiculo do banner"
+    link: "https://example.com/banner/veiculo"
+    priority: 0
+
 conversations:
   - id: conv-veiculo-alta
     type: action
@@ -5,7 +22,6 @@ conversations:
     text: "Ofertas da semana em veiculos"
     link: "https://example.com/veiculos/promocoes"
     priority: 10
-    components: [banner, card]
 
   - id: conv-veiculo-baixa
     type: evaluation
@@ -13,7 +29,6 @@ conversations:
     text: "Veja avaliacoes de outros clientes"
     link: "https://example.com/veiculos/avaliacoes"
     priority: 5
-    components: [banner, card]
 
   - id: conv-eletro-alta
     type: action
@@ -21,7 +36,6 @@ conversations:
     text: "Eletrodomesticos com desconto"
     link: "https://example.com/eletrodomesticos/promocoes"
     priority: 20
-    components: [banner]
 
   - id: conv-generica
     type: knowledge
@@ -29,20 +43,3 @@ conversations:
     text: "Saiba mais sobre nossa empresa"
     link: "https://example.com/sobre"
     priority: 1
-    components: [banner, card, footer]
-
-  - id: conv-empate-a
-    type: knowledge
-    product: ""
-    text: "Central de ajuda"
-    link: "https://example.com/ajuda"
-    priority: 7
-    components: [footer]
-
-  - id: conv-empate-b
-    type: knowledge
-    product: ""
-    text: "Fale conosco"
-    link: "https://example.com/contato"
-    priority: 7
-    components: [footer]

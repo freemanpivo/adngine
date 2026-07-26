@@ -1,3 +1,10 @@
+component: banner
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default"
+    link: "https://example.com"
 conversations:
   - id: conv-prioridade-invalida
     type: action
@@ -5,4 +12,3 @@ conversations:
     text: "Prioridade em formato invalido"
     link: "https://example.com"
     priority: "dez"
-    components: [banner]

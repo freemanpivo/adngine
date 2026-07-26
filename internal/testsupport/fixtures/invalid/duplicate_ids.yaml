@@ -1,0 +1,14 @@
+component: banner
+fallbacks:
+  - product: ""
+    id: conv-repetida
+    type: knowledge
+    text: "Fallback com id de conversa"
+    link: "https://example.com"
+conversations:
+  - id: conv-repetida
+    type: action
+    product: veiculo
+    text: "Conversa com id de fallback"
+    link: "https://example.com/veiculos"
+    priority: 10

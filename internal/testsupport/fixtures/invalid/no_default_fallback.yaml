@@ -1,0 +1,14 @@
+component: banner
+fallbacks:
+  - product: veiculo
+    id: fb-banner-veiculo
+    type: knowledge
+    text: "So existe fallback de veiculo"
+    link: "https://example.com/veiculos"
+conversations:
+  - id: conv-generica
+    type: knowledge
+    product: ""
+    text: "Saiba mais"
+    link: "https://example.com/sobre"
+    priority: 1

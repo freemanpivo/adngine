@@ -1,0 +1,20 @@
+component: banner
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default"
+    link: "https://example.com"
+conversations:
+  - id: conv-sem-texto
+    type: action
+    product: veiculo
+    link: "https://example.com"
+    priority: 10
+  - type: knowledge
+    text: "Conversa sem id"
+    link: "https://example.com"
+  - id: conv-tipo-invalido
+    type: banner
+    text: "Tipo que nao existe"
+    link: "https://example.com"

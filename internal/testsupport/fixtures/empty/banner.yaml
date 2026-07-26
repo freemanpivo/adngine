@@ -1,0 +1,11 @@
+component: banner
+
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default do banner"
+    link: "https://example.com/banner/default"
+    priority: 0
+
+conversations: []
