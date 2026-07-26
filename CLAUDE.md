@@ -32,7 +32,10 @@ go test ./internal/selection/...
 go test ./internal/selection/ -run TestBannerSelector
 ```
 
-There is no test suite yet - add `_test.go` files alongside the code they cover as functionality is added.
+Tests live alongside the code they cover, in external test packages (`package selection_test`). Shared
+conversation inventories used by tests live in `internal/testsupport/fixtures/` and are loaded through
+`testsupport.LoadRepository(t, "inventory_valid.yaml")`, which resolves the path from the `testsupport`
+package itself - so any package can use the same fixtures.
 
 ## Architecture
 
