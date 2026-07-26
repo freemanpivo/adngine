@@ -1,0 +1,31 @@
+component: footer
+
+fallbacks:
+  - product: ""
+    id: fb-footer-default
+    type: knowledge
+    text: "Fallback default do footer"
+    link: "https://example.com/footer/default"
+    priority: 0
+
+conversations:
+  - id: conv-generica
+    type: knowledge
+    product: ""
+    text: "Saiba mais sobre nossa empresa"
+    link: "https://example.com/sobre"
+    priority: 1
+
+  - id: conv-empate-a
+    type: knowledge
+    product: ""
+    text: "Central de ajuda"
+    link: "https://example.com/ajuda"
+    priority: 7
+
+  - id: conv-empate-b
+    type: knowledge
+    product: ""
+    text: "Fale conosco"
+    link: "https://example.com/contato"
+    priority: 7

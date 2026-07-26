@@ -9,8 +9,9 @@ content with a type (`knowledge`, `action`, `evaluation`), an optional related p
 `eletrodomestico`), display priority, and the list of display components they're eligible for. Given a client and a
 set of requested display components (slots), the API returns the single best conversation for each slot.
 
-Conversations are currently registered via a static YAML file (`configs/conversations.yaml`), not a database -
-this is intentional for the MVP stage.
+Conversations are registered via static YAML files, one per display component (`configs/conversations/banner.yaml`,
+`card.yaml`, `footer.yaml`), not a database - this is intentional for the MVP stage. Each file also declares the
+component's `fallbacks`, one per product plus a mandatory default (`product: ""`).
 
 ## Commands
 
@@ -46,9 +47,14 @@ Request flow: `cmd/adngine` -> `internal/app` (wiring) -> `internal/httpserver` 
   loads the conversation repository, builds the selection registry, and constructs the HTTP server. `cmd/adngine`
   only parses the `-config` flag and calls into this package; it has no other logic.
 - **`internal/config`** - Viper-based config loading (`config.Load(path)`) into a typed `Config` struct
-  (`server.port`, `log.level`, `conversations.file_path`).
-- **`internal/conversation`** - the domain model (`Conversation`, `Type`, `Client`) and the `Repository`, which
-  loads the conversation registry from YAML (also via Viper) and answers `ByComponent(component)` queries.
+  (`server.port`, `log.level`, `selection.global_timeout`, and `selection.components.<name>` with `file_path`,
+  `timeout` and `max_calls`). Defaults are applied in code, not through Viper defaults: declaring any component in
+  the config replaces the built-in list entirely, so removing a component from the config actually removes it.
+- **`internal/conversation`** - the domain model (`Conversation`, `Type`, `Source`, `EligibilitySpec`, `Client`,
+  `ComponentInventory`) and the `Repository`, which loads one inventory file per component (via Viper) and answers
+  `Candidates(component)` and `Fallback(component, product)`. Both return copies, so consumers cannot corrupt the
+  in-memory inventory. `validate.go` runs at load time and accumulates every violation instead of stopping at the
+  first one.
 - **`internal/selection`** - the selection engine. `Selector` is the per-component interface; **each component
   (banner, card, footer) has its own file** (`banner.go`, `card.go`, `footer.go`) with its own selector type, so
   a component's ranking rule can be changed without touching the others. All three currently delegate to the
@@ -60,15 +66,20 @@ Request flow: `cmd/adngine` -> `internal/app` (wiring) -> `internal/httpserver` 
 
 ### Adding a new display component
 
-1. Add a new file in `internal/selection` (e.g. `sidebar.go`) with its own `Component<Name>` constant and
-   `<Name>Selector` type implementing `Selector`.
-2. Register it in `NewRegistry` in `selector.go`.
-3. Reference the new component name in `configs/conversations.yaml` under a conversation's `components` list.
+1. Create `configs/conversations/<name>.yaml` with `component: <name>`, a `fallbacks` list (default entry
+   required) and the conversations.
+2. Add the component under `selection.components` in `configs/config.yaml` with its `file_path` and `timeout`.
+
+That is enough: a component with no registered selector falls back to `DefaultSelector`. Only add a file in
+`internal/selection` (e.g. `sidebar.go`) with its own `Component<Name>` constant and `<Name>Selector` type, and
+register it in `selectorsByComponent` in `selector.go`, when the component needs a ranking rule of its own.
 
 ### Adding a new conversation
 
-Add an entry to `configs/conversations.yaml` (`id`, `type`, `product`, `text`, `link`, `priority`, `components`).
-No code change is needed unless the entry requires new selection logic.
+Add an entry to the component's file in `configs/conversations/` (`id`, `type`, `product`, `text`, `link`,
+`priority`, and optionally `eligibility`). A conversation that should appear in two components is declared in both
+files - the duplication is intentional, since the inventories are independent and may diverge. No code change is
+needed unless the entry requires new selection logic.
 
 ## Stack
 

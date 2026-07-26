@@ -1,0 +1,14 @@
+component: banner
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default"
+    link: "https://example.com"
+    eligibility:
+      source: dynamodb
+      rule:
+        all:
+          - field: elegivel
+            op: truthy
+conversations: []

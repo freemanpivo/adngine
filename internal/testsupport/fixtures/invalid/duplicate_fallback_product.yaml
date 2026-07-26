@@ -1,0 +1,18 @@
+component: banner
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default"
+    link: "https://example.com"
+  - product: veiculo
+    id: fb-banner-veiculo-a
+    type: knowledge
+    text: "Fallback de veiculo"
+    link: "https://example.com/veiculos"
+  - product: veiculo
+    id: fb-banner-veiculo-b
+    type: knowledge
+    text: "Outro fallback de veiculo"
+    link: "https://example.com/veiculos/2"
+conversations: []

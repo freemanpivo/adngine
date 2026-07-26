@@ -1,0 +1,16 @@
+component: banner
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default"
+    link: "https://example.com"
+conversations:
+  - id: conv-source-invalida
+    type: action
+    product: veiculo
+    text: "Source que nao existe"
+    link: "https://example.com"
+    priority: 10
+    eligibility:
+      source: cassandra

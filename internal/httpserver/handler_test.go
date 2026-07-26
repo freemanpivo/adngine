@@ -27,10 +27,15 @@ type selectionResponse struct {
 	} `json:"selections"`
 }
 
-func newTestApp(t *testing.T, fixture string) *fiber.App {
+func newTestApp(t *testing.T) *fiber.App {
 	t.Helper()
 
-	registry := selection.NewRegistry(testsupport.LoadRepository(t, fixture))
+	return newAppWithRegistry(t, selection.NewRegistry(testsupport.LoadInventory(t), testsupport.Components))
+}
+
+func newAppWithRegistry(t *testing.T, registry *selection.Registry) *fiber.App {
+	t.Helper()
+
 	handler := httpserver.NewHandler(slog.New(slog.DiscardHandler), registry)
 
 	app := fiber.New()
@@ -68,7 +73,7 @@ func decode(t *testing.T, raw []byte) selectionResponse {
 }
 
 func TestHandlerSelecionaUmaConversaPorSlot(t *testing.T) {
-	app := newTestApp(t, "inventory_valid.yaml")
+	app := newTestApp(t)
 
 	resp, raw := post(t, app, `{
 		"client": {"id": "cliente-1", "product": "veiculo"},
@@ -100,7 +105,7 @@ func TestHandlerSelecionaUmaConversaPorSlot(t *testing.T) {
 }
 
 func TestHandlerExpoeOsCamposDaConversa(t *testing.T) {
-	app := newTestApp(t, "inventory_valid.yaml")
+	app := newTestApp(t)
 
 	_, raw := post(t, app, `{"client": {"id": "cliente-1", "product": "veiculo"}, "slots": ["banner"]}`)
 
@@ -126,7 +131,7 @@ func TestHandlerExpoeOsCamposDaConversa(t *testing.T) {
 // `null`, indistinguiveis para o consumidor. A RF-40 troca isso por uma entrada
 // com fallback e reason.
 func TestHandlerComponenteDesconhecidoRetornaNulo(t *testing.T) {
-	app := newTestApp(t, "inventory_valid.yaml")
+	app := newTestApp(t)
 
 	resp, raw := post(t, app, `{
 		"client": {"id": "cliente-1", "product": "veiculo"},
@@ -153,7 +158,7 @@ func TestHandlerComponenteDesconhecidoRetornaNulo(t *testing.T) {
 // Produto sem inventario proprio ainda enxerga as conversas sem produto: a
 // ausencia de match so acontece quando nao ha nenhuma conversa generica.
 func TestHandlerProdutoDesconhecidoCaiNaConversaGenerica(t *testing.T) {
-	app := newTestApp(t, "inventory_valid.yaml")
+	app := newTestApp(t)
 
 	_, raw := post(t, app, `{"client": {"id": "cliente-1", "product": "imovel"}, "slots": ["banner"]}`)
 
@@ -167,7 +172,7 @@ func TestHandlerProdutoDesconhecidoCaiNaConversaGenerica(t *testing.T) {
 }
 
 func TestHandlerClienteSemProduto(t *testing.T) {
-	app := newTestApp(t, "inventory_valid.yaml")
+	app := newTestApp(t)
 
 	_, raw := post(t, app, `{"client": {"id": "cliente-1"}, "slots": ["banner", "card"]}`)
 
@@ -184,7 +189,7 @@ func TestHandlerClienteSemProduto(t *testing.T) {
 }
 
 func TestHandlerSlotRepetido(t *testing.T) {
-	app := newTestApp(t, "inventory_valid.yaml")
+	app := newTestApp(t)
 
 	_, raw := post(t, app, `{"client": {"id": "cliente-1", "product": "veiculo"}, "slots": ["banner", "banner"]}`)
 
@@ -195,7 +200,7 @@ func TestHandlerSlotRepetido(t *testing.T) {
 }
 
 func TestHandlerRequisicaoInvalida(t *testing.T) {
-	app := newTestApp(t, "inventory_valid.yaml")
+	app := newTestApp(t)
 
 	tests := []struct {
 		name string
@@ -226,7 +231,8 @@ func TestHandlerRequisicaoInvalida(t *testing.T) {
 }
 
 func TestHandlerInventarioVazio(t *testing.T) {
-	app := newTestApp(t, "inventory_empty.yaml")
+	repo := testsupport.LoadComponent(t, "banner", "empty/banner.yaml")
+	app := newAppWithRegistry(t, selection.NewRegistry(repo, []string{"banner"}))
 
 	resp, raw := post(t, app, `{"client": {"id": "cliente-1", "product": "veiculo"}, "slots": ["banner"]}`)
 	if resp.StatusCode != http.StatusOK {

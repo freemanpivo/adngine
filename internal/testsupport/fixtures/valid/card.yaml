@@ -1,0 +1,31 @@
+component: card
+
+fallbacks:
+  - product: ""
+    id: fb-card-default
+    type: knowledge
+    text: "Fallback default do card"
+    link: "https://example.com/card/default"
+    priority: 0
+
+conversations:
+  - id: conv-veiculo-alta
+    type: action
+    product: veiculo
+    text: "Ofertas da semana em veiculos"
+    link: "https://example.com/veiculos/promocoes"
+    priority: 10
+
+  - id: conv-veiculo-baixa
+    type: evaluation
+    product: veiculo
+    text: "Veja avaliacoes de outros clientes"
+    link: "https://example.com/veiculos/avaliacoes"
+    priority: 5
+
+  - id: conv-generica
+    type: knowledge
+    product: ""
+    text: "Saiba mais sobre nossa empresa"
+    link: "https://example.com/sobre"
+    priority: 1

@@ -1,3 +1,4 @@
+component: banner
 conversations:
   - id: "conv-sem-aspas-fechadas
     type: action

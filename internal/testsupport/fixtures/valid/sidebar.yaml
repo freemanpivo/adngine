@@ -1,0 +1,24 @@
+component: sidebar
+
+fallbacks:
+  - product: ""
+    id: fb-sidebar-default
+    type: knowledge
+    text: "Fallback default da sidebar"
+    link: "https://example.com/sidebar/default"
+    priority: 0
+
+conversations:
+  - id: conv-sidebar-veiculo
+    type: action
+    product: veiculo
+    text: "Ofertas de veiculos na sidebar"
+    link: "https://example.com/veiculos/sidebar"
+    priority: 10
+
+  - id: conv-sidebar-generica
+    type: knowledge
+    product: ""
+    text: "Saiba mais sobre nossa empresa"
+    link: "https://example.com/sobre"
+    priority: 1

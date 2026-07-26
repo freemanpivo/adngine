@@ -1,0 +1,24 @@
+component: footer
+
+fallbacks:
+  - product: ""
+    id: fb-footer-default
+    type: knowledge
+    text: "Saiba mais sobre nossa empresa"
+    link: "https://example.com/sobre"
+    priority: 0
+
+  - product: veiculo
+    id: fb-footer-veiculo
+    type: knowledge
+    text: "Conheca nosso catalogo de veiculos"
+    link: "https://example.com/veiculos"
+    priority: 0
+
+conversations:
+  - id: conv-institucional
+    type: knowledge
+    product: ""
+    text: "Saiba mais sobre nossa empresa"
+    link: "https://example.com/sobre"
+    priority: 1

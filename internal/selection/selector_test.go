@@ -144,7 +144,7 @@ func TestSelectorEmpateDePrioridadeMantemAOrdemDeEntrada(t *testing.T) {
 // O selector devolve um ponteiro; quem consome nao pode conseguir corromper o
 // inventario em memoria atraves dele.
 func TestRegistrySelectNaoExpoeOInventarioParaEscrita(t *testing.T) {
-	registry := selection.NewRegistry(testsupport.LoadRepository(t, "inventory_valid.yaml"))
+	registry := selection.NewRegistry(testsupport.LoadInventory(t), testsupport.Components)
 	client := conversation.Client{ID: "c1", Product: "veiculo"}
 
 	first, ok := registry.Select(selection.ComponentBanner, client)
@@ -164,8 +164,8 @@ func TestRegistrySelectNaoExpoeOInventarioParaEscrita(t *testing.T) {
 }
 
 func TestRegistrySelect(t *testing.T) {
-	repo := testsupport.LoadRepository(t, "inventory_valid.yaml")
-	registry := selection.NewRegistry(repo)
+	repo := testsupport.LoadInventory(t)
+	registry := selection.NewRegistry(repo, testsupport.Components)
 
 	tests := []struct {
 		name      string
@@ -232,9 +232,34 @@ func TestRegistrySelect(t *testing.T) {
 }
 
 func TestRegistrySelectComInventarioVazio(t *testing.T) {
-	registry := selection.NewRegistry(testsupport.LoadRepository(t, "inventory_empty.yaml"))
+	repo := testsupport.LoadComponent(t, selection.ComponentBanner, "empty/banner.yaml")
+	registry := selection.NewRegistry(repo, []string{selection.ComponentBanner})
 
 	if _, ok := registry.Select(selection.ComponentBanner, conversation.Client{ID: "c1"}); ok {
 		t.Fatal("esperava nenhuma selecao com inventario vazio")
+	}
+}
+
+// T-106: um componente registrado apenas por configuracao, sem selector
+// proprio, precisa funcionar com o ranking padrao.
+func TestRegistryComponenteSomenteDeConfiguracao(t *testing.T) {
+	repo := testsupport.LoadComponent(t, "sidebar", "valid/sidebar.yaml")
+	registry := selection.NewRegistry(repo, []string{"sidebar"})
+
+	got, ok := registry.Select("sidebar", conversation.Client{ID: "c1", Product: "veiculo"})
+	if !ok {
+		t.Fatal("esperava uma selecao para o componente novo")
+	}
+	if got.ID != "conv-sidebar-veiculo" {
+		t.Fatalf("esperava conv-sidebar-veiculo, recebeu %s", got.ID)
+	}
+}
+
+func TestRegistryNaoRegistraComponenteForaDaConfiguracao(t *testing.T) {
+	repo := testsupport.LoadInventory(t)
+	registry := selection.NewRegistry(repo, []string{selection.ComponentBanner})
+
+	if _, ok := registry.Select(selection.ComponentFooter, conversation.Client{ID: "c1"}); ok {
+		t.Fatal("componente fora da configuracao nao pode ser selecionavel")
 	}
 }

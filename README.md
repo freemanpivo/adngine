@@ -5,7 +5,9 @@ API de selecao de anuncios. Voce cadastra **conversas** (pecas de conteudo publi
 prioridade e aos componentes de tela onde podem aparecer (`banner`, `card`, `footer`). Dado um cliente e os
 componentes solicitados, a API retorna a melhor conversa para cada um.
 
-O cadastro de conversas atualmente e feito via arquivo (`configs/conversations.yaml`).
+O cadastro de conversas e feito via arquivo, um por componente (`configs/conversations/banner.yaml`,
+`card.yaml`, `footer.yaml`). Cada arquivo tambem declara os `fallbacks` do componente, um por produto mais um
+default obrigatorio.
 
 ## Rodando localmente
 
@@ -61,8 +63,8 @@ curl -X POST http://localhost:8080/v1/selections \
 
 ## Configuracao
 
-- `configs/config.yaml` - porta do servidor, nivel de log e caminho do arquivo de conversas.
-- `configs/conversations.yaml` - registro das conversas disponiveis.
+- `configs/config.yaml` - porta do servidor, nivel de log, orcamento de tempo e os componentes ativos.
+- `configs/conversations/<componente>.yaml` - inventario e fallbacks de cada componente.
 
 Para usar um arquivo de config diferente:
 
