@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"slices"
+
+	"github.com/freemanpivo/adngine/internal/eligibility"
 )
 
 const DefaultFallbackProduct = ""
@@ -27,8 +29,14 @@ func (inv ComponentInventory) Validate(component string) error {
 	for i, c := range inv.Conversations {
 		errs = append(errs, validateConversation(c, fmt.Sprintf("conversations[%d]", i))...)
 
-		if c.Eligibility != nil && !slices.Contains(knownSources, c.Source()) {
+		if c.Eligibility == nil {
+			continue
+		}
+		if !slices.Contains(knownSources, c.Source()) {
 			errs = append(errs, fmt.Errorf("conversa %q: source desconhecida %q", c.ID, c.Source()))
+		}
+		if err := eligibility.ValidateRule(c.Eligibility.Rule); err != nil {
+			errs = append(errs, fmt.Errorf("conversa %q: regra invalida: %w", c.ID, err))
 		}
 	}
 

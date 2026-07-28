@@ -55,6 +55,15 @@ Request flow: `cmd/adngine` -> `internal/app` (wiring) -> `internal/httpserver` 
   `Candidates(component)` and `Fallback(component, product)`. Both return copies, so consumers cannot corrupt the
   in-memory inventory. `validate.go` runs at load time and accumulates every violation instead of stopping at the
   first one.
+- **`internal/eligibility`** - the rule engine, pure (no I/O) and independent of the inventory. A conversation's
+  `eligibility.rule` is a tree of combinators (`all`, `any`, `not`) and predicates
+  (`{field, op, value, weight, required, log_value}`), evaluated against a schema-less attribute bag.
+  `Compile(conversationID, raw)` parses and pre-computes everything the hot path should not pay for
+  (`predicate_id`, textual `label`, total weight, flat predicate list, compiled regex) and is also what
+  `ValidateRule` uses for the fail-fast check at inventory load. `Evaluate(bag, rule, collector)` never
+  short-circuits: adherence and the decision trace need every predicate's result. Eligibility is binary
+  (`required: true` predicates decide it); `required: false` predicates only feed adherence and never disqualify,
+  at any depth. With the `Nop` collector, evaluation allocates nothing - keep it that way (there is a test).
 - **`internal/selection`** - the selection engine. `Selector` is the per-component interface; **each component
   (banner, card, footer) has its own file** (`banner.go`, `card.go`, `footer.go`) with its own selector type, so
   a component's ranking rule can be changed without touching the others. All three currently delegate to the

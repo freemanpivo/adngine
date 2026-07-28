@@ -1,0 +1,30 @@
+component: banner
+fallbacks:
+  - product: ""
+    id: fb-banner-default
+    type: knowledge
+    text: "Fallback default"
+    link: "https://example.com"
+conversations:
+  - id: conv-regra-quebrada
+    type: action
+    product: veiculo
+    text: "Regra com operador inexistente"
+    link: "https://example.com"
+    priority: 10
+    eligibility:
+      source: static
+      rule:
+        all:
+          - field: perfil.faixa_renda
+            op: aproximadamente
+            value: A
+          - field: ""
+            op: eq
+            value: 1
+          - field: score
+            op: in
+            value: 700
+          - field: documento
+            op: regex
+            value: "([0-9]"
