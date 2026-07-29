@@ -264,6 +264,12 @@ func TestRepositoryLoadComponentErros(t *testing.T) {
 			rel:       "invalid/unknown_source.yaml",
 			wantIn:    "source desconhecida",
 		},
+		{
+			name:      "regra de elegibilidade invalida",
+			component: "banner",
+			rel:       "invalid/invalid_rule.yaml",
+			wantIn:    `conversa "conv-regra-quebrada": regra invalida`,
+		},
 	}
 
 	for _, tt := range tests {
@@ -294,6 +300,30 @@ func TestRepositoryLoadComponentAcumulaViolacoes(t *testing.T) {
 	}
 
 	for _, want := range []string{"text e obrigatorio", "id e obrigatorio", "type invalido"} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("erro deveria conter %q, recebeu %q", want, err)
+		}
+	}
+}
+
+// Uma regra quebrada tambem reporta todas as violacoes de uma vez, nomeando a
+// conversa.
+func TestRepositoryLoadComponentAcumulaViolacoesDeRegra(t *testing.T) {
+	repo := conversation.NewRepository(testsupport.Logger())
+
+	err := repo.LoadComponent("banner", testsupport.FixturePath(t, "invalid/invalid_rule.yaml"))
+	if err == nil {
+		t.Fatal("esperava erro, recebeu nil")
+	}
+
+	wants := []string{
+		"conv-regra-quebrada",
+		`operador desconhecido "aproximadamente"`,
+		"field e obrigatorio",
+		`operador "in" exige uma lista em value`,
+		"regex invalida",
+	}
+	for _, want := range wants {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("erro deveria conter %q, recebeu %q", want, err)
 		}
